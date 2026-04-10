@@ -1,0 +1,243 @@
+# Competitor Store Registry
+#
+# shop_id format: {market_code}{competitor_initial}{seq:05d}
+#   market_code        : 2-letter code  (HK, TH, VN, MC, SG, KH, LA, MY)
+#   competitor_initial : 1-letter code  (M=McDonald's, C=CHANGEE, S=Sushiro, L=Luckin)
+#   seq                : 5-digit zero-padded sequence (per competitor-market, 1-indexed)
+#
+# Example: HKM00001 = McDonald's HK, shop #1
+#
+# scraper_class options:
+#   McDonaldsScraper | ChangeeScraper | SushiroScraper | LuckinScraper
+#
+# enabled: false → skipped at runtime (no website / no presence in that market)
+
+competitors:
+
+  # ─── McDonald's ───────────────────────────────────────────────────────────
+  - market_code: "HK"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://mcdonalds.com.hk/en/find-a-restaurant/"
+    enabled: true
+
+  - market_code: "TH"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://www.mcdonalds.co.th/en/restaurant-locator"
+    enabled: true
+
+  - market_code: "VN"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://www.mcdonalds.com.vn/en/restaurant-locator.html"
+    enabled: true
+
+  - market_code: "MC"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://www.mcdonalds.com.mo/en/restaurant-locator.html"
+    enabled: true
+
+  - market_code: "SG"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://www.mcdonalds.com.sg/locate-us/"
+    enabled: true
+
+  - market_code: "KH"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: ""
+    enabled: false  # No McDonald's presence in Cambodia
+
+  - market_code: "LA"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: ""
+    enabled: false  # No McDonald's presence in Laos
+
+  - market_code: "MY"
+    competitor_name: "McDonald's"
+    competitor_initial: "M"
+    scraper_class: McDonaldsScraper
+    url: "https://www.mcdonalds.com.my/find-a-restaurant"
+    enabled: true
+
+  # ─── CHANGEE ─────────────────────────────────────────────────────────────
+  - market_code: "HK"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: "https://www.changee.com.hk/pages/store-location"  # TODO: confirm URL
+    enabled: true
+
+  - market_code: "TH"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false  # TODO: confirm if CHANGEE operates in Thailand
+
+  - market_code: "VN"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false  # TODO: confirm if CHANGEE operates in Vietnam
+
+  - market_code: "MC"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false  # TODO: confirm if CHANGEE operates in Macau
+
+  - market_code: "SG"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false  # TODO: confirm if CHANGEE operates in Singapore
+
+  - market_code: "KH"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false
+
+  - market_code: "LA"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false
+
+  - market_code: "MY"
+    competitor_name: "CHANGEE"
+    competitor_initial: "C"
+    scraper_class: ChangeeScraper
+    url: ""
+    enabled: false  # TODO: confirm if CHANGEE operates in Malaysia
+
+  # ─── Sushiro ─────────────────────────────────────────────────────────────
+  - market_code: "HK"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: "https://www.sushiro.com.hk/store/"
+    enabled: true
+
+  - market_code: "TH"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: "https://www.sushiro.co.th/shop/"
+    enabled: true
+
+  - market_code: "VN"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: ""
+    enabled: false  # TODO: confirm if Sushiro operates in Vietnam
+
+  - market_code: "MC"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: ""
+    enabled: false  # TODO: confirm if Sushiro operates in Macau
+
+  - market_code: "SG"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: "https://www.sushiro.com.sg/store-locator/"
+    enabled: true
+
+  - market_code: "KH"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: ""
+    enabled: false
+
+  - market_code: "LA"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: ""
+    enabled: false
+
+  - market_code: "MY"
+    competitor_name: "Sushiro"
+    competitor_initial: "S"
+    scraper_class: SushiroScraper
+    url: ""
+    enabled: false  # TODO: confirm if Sushiro operates in Malaysia
+
+  # ─── Luckin Coffee ───────────────────────────────────────────────────────
+  - market_code: "HK"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false  # TODO: confirm if Luckin operates in HK
+
+  - market_code: "TH"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false
+
+  - market_code: "VN"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false
+
+  - market_code: "MC"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false
+
+  - market_code: "SG"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: "https://sg.luckincoffee.com/"  # TODO: confirm URL
+    enabled: true
+
+  - market_code: "KH"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false
+
+  - market_code: "LA"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: ""
+    enabled: false
+
+  - market_code: "MY"
+    competitor_name: "Luckin Coffee"
+    competitor_initial: "L"
+    scraper_class: LuckinScraper
+    url: "https://my.luckincoffee.com/"  # TODO: confirm URL
+    enabled: true

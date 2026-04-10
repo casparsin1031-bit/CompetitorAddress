@@ -1,0 +1,115 @@
+name: Monthly Competitor Store Scrape
+
+on:
+  # Run at 02:00 UTC on the 1st of every month
+  schedule:
+    - cron: "0 2 1 * *"
+
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force re-scrape (ignore existing cache)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      filter:
+        description: "Filter entries (e.g. HKM, McDonald's, SG) — leave blank for all"
+        required: false
+        default: ""
+      no_enrich:
+        description: "Skip maplatlong geocoding (scrape only)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  scrape:
+    name: Scrape & Enrich Competitor Stores
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      # ── 1. Checkout this repo ───────────────────────────────────────────
+      - name: Checkout CompetitorAddress
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so we can push back enriched output
+          fetch-depth: 0
+
+      # ── 2. Checkout maplatlong (private repo) ───────────────────────────
+      #    Requires a GitHub PAT stored as secret MAPLATLONG_TOKEN
+      #    with read access to casparsin1031-bit/maplatlong.
+      - name: Checkout maplatlong
+        uses: actions/checkout@v4
+        with:
+          repository: casparsin1031-bit/maplatlong
+          path: maplatlong
+          token: ${{ secrets.MAPLATLONG_TOKEN }}
+
+      # ── 3. Set up Python ─────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ── 4. Install dependencies ──────────────────────────────────────────
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      # ── 5. Install maplatlong dependencies (if it has its own requirements) ──
+      - name: Install maplatlong dependencies
+        run: |
+          if [ -f maplatlong/requirements.txt ]; then
+            pip install -r maplatlong/requirements.txt
+          fi
+
+      # ── 6. Install Playwright browsers ───────────────────────────────────
+      - name: Install Playwright Chromium
+        run: playwright install chromium --with-deps
+
+      # ── 7. Run pipeline ───────────────────────────────────────────────────
+      - name: Run pipeline
+        env:
+          MAPLATLONG_DIR: ./maplatlong
+          PYTHONUNBUFFERED: "1"
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            ARGS="$ARGS --force"
+          fi
+          if [ -n "${{ github.event.inputs.filter }}" ]; then
+            ARGS="$ARGS --filter ${{ github.event.inputs.filter }}"
+          fi
+          if [ "${{ github.event.inputs.no_enrich }}" = "true" ]; then
+            ARGS="$ARGS --no-enrich"
+          fi
+          python pipeline.py $ARGS
+
+      # ── 8. Upload output as artifact ─────────────────────────────────────
+      - name: Upload dimension table artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: competitor-dim-${{ github.run_id }}
+          path: output/
+          retention-days: 90
+
+      # ── 9. Commit output + cache back to the branch ───────────────────────
+      #    PowerBI can then refresh by pulling the latest Parquet/CSV.
+      - name: Commit and push output
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          # Stage output and cache (cache is gitignored locally but we commit it in CI
+          # to preserve the monthly snapshot; remove if storage is a concern)
+          git add --force output/ cache/ || true
+          MONTH=$(date +%Y-%m)
+          git commit -m "data: monthly competitor store refresh ${MONTH} [skip ci]" || echo "Nothing to commit"
+          git push origin HEAD
