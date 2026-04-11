@@ -155,14 +155,21 @@ def build_dim_rows(
     for seq, store in enumerate(raw_stores, start=1):
         shop_id = f"{prefix}{seq:05d}"
 
-        # Use coordinates already captured from the source API when available;
-        # fall back to maplatlong enrichment only when both are absent.
+        # Coordinates: prefer those already captured from the source API.
+        # GADM fields (province/city/district) always come from geo enrichment.
         scraped_lat = store.get("lat")
         scraped_lon = store.get("lon")
         geo = {"lat": scraped_lat, "lon": scraped_lon, "province": None, "city": None, "district": None}
-        if enrich and (scraped_lat is None or scraped_lon is None):
+        if enrich:
             try:
-                geo = geo_lookup(store["shop_name"], store["address"])
+                enriched = geo_lookup(store["shop_name"], store["address"])
+                # Keep source-API coordinates when available; use enriched as fallback
+                geo["lat"] = scraped_lat if scraped_lat is not None else enriched["lat"]
+                geo["lon"] = scraped_lon if scraped_lon is not None else enriched["lon"]
+                # Province/city/district only come from geo enrichment
+                geo["province"] = enriched["province"]
+                geo["city"] = enriched["city"]
+                geo["district"] = enriched["district"]
             except Exception as exc:
                 log.warning("    geo_lookup failed for %s: %s", shop_id, exc)
 

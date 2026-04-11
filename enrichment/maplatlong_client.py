@@ -75,6 +75,23 @@ _EMPTY: GeoResult = {
     "district": None,
 }
 
+# ── Type coercion helpers (defined early — used by _load_cache at import time) ─
+
+def _to_float(value) -> float | None:
+    try:
+        v = str(value).strip()
+        return float(v) if v else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _to_str(value) -> str | None:
+    if value is None:
+        return None
+    s = str(value).strip()
+    return s if s else None
+
+
 # ── Cache helpers ─────────────────────────────────────────────────────────────
 
 _CACHE_FIELDS = ["query", "lat", "lon", "province", "city", "district"]
@@ -283,7 +300,8 @@ def _parse_address_components(
     -------
     province  ← administrative_area_level_1
     city      ← locality  OR  administrative_area_level_2
-    district  ← sublocality_level_1  OR  sublocality
+    district  ← sublocality_level_1  OR  sublocality  OR  neighborhood
+                (HK returns "neighborhood" instead of sublocality for districts)
     """
     if not results:
         return None, None, None
@@ -304,6 +322,8 @@ def _parse_address_components(
         elif "sublocality_level_1" in types:
             district = name
         elif "sublocality" in types and district is None:
+            district = name
+        elif "neighborhood" in types and district is None:
             district = name
 
     return province, city, district
@@ -381,20 +401,3 @@ def lookup(shop_name: str, address: str) -> GeoResult:
         return geo
 
     return dict(_EMPTY)
-
-
-# ── Type coercion helpers ─────────────────────────────────────────────────────
-
-def _to_float(value) -> float | None:
-    try:
-        v = str(value).strip()
-        return float(v) if v else None
-    except (TypeError, ValueError):
-        return None
-
-
-def _to_str(value) -> str | None:
-    if value is None:
-        return None
-    s = str(value).strip()
-    return s if s else None
