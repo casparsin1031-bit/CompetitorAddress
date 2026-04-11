@@ -88,11 +88,22 @@ CompetitorAddress/
 2. Register it in `scrapers/__init__.py` REGISTRY
 3. Add entries to `config/competitors.yaml` with `enabled: true`
 
-## Geo enrichment (maplatlong)
-- Requires the `casparsin1031-bit/maplatlong` repo cloned alongside this project
-- Set `MAPLATLONG_DIR` env var to point to it (default: `../maplatlong`)
-- Enrichment is skipped gracefully when the repo is absent (all geo fields → null)
-- Scrapers that already return lat/lon from the source API skip maplatlong automatically
+## Geo enrichment (Google Maps Geocoding API)
+
+- Calls the Google Maps Geocoding REST API directly — no external repo needed
+- **API key setup:** copy `.env.example` → `.env` and set `GOOGLE_API_KEY=your_key`
+  - `.env` is gitignored — **never commit the real key**
+  - If the key is absent the pipeline logs a warning and continues with null geo fields
+- **Address cleaning + fallback:** tries up to 6 query variants (most-specific first)
+  using `clean_address` / `clean_store_name` / `build_query_variants` in `enrichment/maplatlong_client.py`
+- **province/city/district** are parsed from Google's `address_components` response:
+  - `province` ← `administrative_area_level_1`
+  - `city` ← `locality` or `administrative_area_level_2`
+  - `district` ← `sublocality_level_1` or `sublocality`
+- **Cache:** results (including misses) are saved to `cache/geocode_cache.csv` and reused
+  on subsequent runs — delete the file to force re-geocoding
+- **Rate limit:** 0.05 s between live API calls (≤ 20 req/s, within Google's default quota)
+- Scrapers that already return lat/lon from the source API skip geocoding automatically
 
 ## Known TODO
 - `CHANGEE` HK scraper: URL placeholder in config, scraper not yet implemented
