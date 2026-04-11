@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+venv/
+
+# Pipeline outputs (generated at runtime — do not commit)
+cache/
+output/
+
+# OS
+.DS_Store
+Thumbs.db
