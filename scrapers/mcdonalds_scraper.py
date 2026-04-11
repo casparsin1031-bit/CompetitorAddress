@@ -98,6 +98,7 @@ class McDonaldsScraper(BaseScraper):
 
     def scrape(self) -> List[RawStore]:
         captured: list[dict] = []
+        self._sg_article_stores: List[RawStore] = []
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -137,6 +138,10 @@ class McDonaldsScraper(BaseScraper):
             self._apply_market_interactions(page)
 
             browser.close()
+
+        # ── SG Zendesk article: DOM parse results take priority ───────────
+        if self.market_code.upper() == "SG" and self._sg_article_stores:
+            return self._sg_article_stores
 
         # ── Parse captured API payloads ───────────────────────────────────
         stores: List[RawStore] = []
@@ -204,16 +209,107 @@ class McDonaldsScraper(BaseScraper):
         page.wait_for_timeout(3_000)
 
     def _interact_sg(self, page: Page) -> None:
-        """McDonald's Singapore store finder interactions."""
-        page.wait_for_timeout(4_000)
-        # SG site often loads stores on search — try clicking "Search" with empty query
-        for selector in ("button[type='submit']", ".search-btn", "#search-btn"):
+        """
+        McDonald's SG URL is a static Zendesk Help Centre article listing all
+        stores.  No API call is made — parse the article DOM directly.
+        """
+        page.wait_for_timeout(3_000)
+        self._sg_article_stores = self._scrape_sg_article(page)
+
+    def _scrape_sg_article(self, page: Page) -> List[RawStore]:
+        """
+        Parse the McDonald's SG Zendesk article for store name, address,
+        phone and operating hours.
+
+        The article body is in `.article-body` (Zendesk standard selector).
+        Two layouts are handled:
+          A) HTML table  → each <tr> is one store (header row skipped)
+          B) Plain text  → blank-line-separated blocks; first non-blank line
+                           is the store name, subsequent labelled lines give
+                           address / tel / hours
+        """
+        stores: List[RawStore] = []
+
+        # ── Locate article body ───────────────────────────────────────────
+        body_el = None
+        for sel in (".article-body", ".article-content", "article", "[class*='article-body']"):
             try:
-                page.click(selector, timeout=2_000)
-                page.wait_for_timeout(3_000)
-                break
+                el = page.query_selector(sel)
+                if el:
+                    body_el = el
+                    break
             except Exception:
                 pass
+
+        if body_el is None:
+            return stores
+
+        # ── Strategy A: table ─────────────────────────────────────────────
+        try:
+            rows = body_el.query_selector_all("tr")
+            if len(rows) > 1:
+                header = [td.inner_text().strip().lower() for td in rows[0].query_selector_all("th, td")]
+                # Map common column header names → indices
+                col = {
+                    "name":    next((i for i, h in enumerate(header) if "name" in h or "outlet" in h or "store" in h), 0),
+                    "address": next((i for i, h in enumerate(header) if "address" in h or "location" in h), 1),
+                    "phone":   next((i for i, h in enumerate(header) if "tel" in h or "phone" in h or "contact" in h), -1),
+                    "hours":   next((i for i, h in enumerate(header) if "hour" in h or "operating" in h), -1),
+                }
+                for row in rows[1:]:
+                    cells = [td.inner_text().strip() for td in row.query_selector_all("td")]
+                    if not cells:
+                        continue
+                    def _cell(idx: int) -> str:
+                        return cells[idx] if 0 <= idx < len(cells) else ""
+                    name = _cell(col["name"])
+                    address = _cell(col["address"])
+                    if name or address:
+                        stores.append(RawStore(
+                            shop_name=name,
+                            address=address,
+                            phone=_cell(col["phone"]),
+                            operating_hours=_cell(col["hours"]),
+                        ))
+                if stores:
+                    return stores
+        except Exception:
+            pass
+
+        # ── Strategy B: plain text blocks ────────────────────────────────
+        try:
+            raw_text = body_el.inner_text()
+            # Split into blocks separated by one or more blank lines
+            blocks = re.split(r"\n\s*\n", raw_text.strip())
+            for block in blocks:
+                lines = [ln.strip() for ln in block.splitlines() if ln.strip()]
+                if not lines:
+                    continue
+                name = lines[0]
+                address = phone = hours = ""
+                for line in lines[1:]:
+                    ll = line.lower()
+                    if ll.startswith("address"):
+                        address = re.sub(r"^address\s*[:\-]\s*", "", line, flags=re.IGNORECASE)
+                    elif ll.startswith("tel") or ll.startswith("phone"):
+                        phone = re.sub(r"^(tel|phone)\s*[:\-]\s*", "", line, flags=re.IGNORECASE)
+                    elif ll.startswith("operating") or ll.startswith("hour") or ll.startswith("open"):
+                        hours = re.sub(r"^(operating hours?|hours?|opening hours?)\s*[:\-]\s*", "", line, flags=re.IGNORECASE)
+                    elif not address:
+                        # If no labelled address yet, treat second line as address
+                        address = line
+                # Skip blocks that look like headings/footers (no address at all)
+                if name and (address or phone):
+                    stores.append(RawStore(
+                        shop_name=name,
+                        address=address,
+                        phone=phone,
+                        operating_hours=hours,
+                    ))
+        except Exception:
+            pass
+
+        return stores
 
     def _interact_my(self, page: Page) -> None:
         """McDonald's Malaysia store finder interactions."""

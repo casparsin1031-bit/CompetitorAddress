@@ -26,14 +26,14 @@ competitors:
     competitor_name: "McDonald's"
     competitor_initial: "M"
     scraper_class: McDonaldsScraper
-    url: "https://www.mcdonalds.co.th/en/restaurant-locator"
+    url: "https://www.mcdonalds.co.th/storeLocations"
     enabled: true
 
   - market_code: "VN"
     competitor_name: "McDonald's"
     competitor_initial: "M"
     scraper_class: McDonaldsScraper
-    url: "https://www.mcdonalds.com.vn/en/restaurant-locator.html"
+    url: "https://mcdonalds.vn/restaurants.html"
     enabled: true
 
   - market_code: "MC"
@@ -41,13 +41,13 @@ competitors:
     competitor_initial: "M"
     scraper_class: McDonaldsScraper
     url: "https://www.mcdonalds.com.mo/en/restaurant-locator.html"
-    enabled: true
+    enabled: false
 
   - market_code: "SG"
     competitor_name: "McDonald's"
     competitor_initial: "M"
     scraper_class: McDonaldsScraper
-    url: "https://www.mcdonalds.com.sg/locate-us/"
+    url: "https://custcare.mcdonalds.com.sg/hc/en-us/articles/11875954072857-McDonald-s-Store-Addresses-and-Contact-Details"
     enabled: true
 
   - market_code: "KH"
@@ -69,15 +69,15 @@ competitors:
     competitor_initial: "M"
     scraper_class: McDonaldsScraper
     url: "https://www.mcdonalds.com.my/find-a-restaurant"
-    enabled: true
+    enabled: false
 
   # ─── CHANGEE ─────────────────────────────────────────────────────────────
   - market_code: "HK"
     competitor_name: "CHANGEE"
     competitor_initial: "C"
     scraper_class: ChangeeScraper
-    url: "https://www.changee.com.hk/pages/store-location"  # TODO: confirm URL
-    enabled: true
+    url: "https://www.changee.com.hk/pages/store-location"
+    enabled: false
 
   - market_code: "TH"
     competitor_name: "CHANGEE"
@@ -133,14 +133,14 @@ competitors:
     competitor_name: "Sushiro"
     competitor_initial: "S"
     scraper_class: SushiroScraper
-    url: "https://www.sushiro.com.hk/store/"
+    url: "https://sushirohk.com.hk/tc/shop.php?wid=3&cid=1"
     enabled: true
 
   - market_code: "TH"
     competitor_name: "Sushiro"
     competitor_initial: "S"
     scraper_class: SushiroScraper
-    url: "https://www.sushiro.co.th/shop/"
+    url: "https://sushiro.co.th/branch/"
     enabled: true
 
   - market_code: "VN"
@@ -161,7 +161,7 @@ competitors:
     competitor_name: "Sushiro"
     competitor_initial: "S"
     scraper_class: SushiroScraper
-    url: "https://www.sushiro.com.sg/store-locator/"
+    url: "https://www.sushiro.com.sg/contact-location/"
     enabled: true
 
   - market_code: "KH"
@@ -218,8 +218,8 @@ competitors:
     competitor_name: "Luckin Coffee"
     competitor_initial: "L"
     scraper_class: LuckinScraper
-    url: "https://sg.luckincoffee.com/"  # TODO: confirm URL
-    enabled: true
+    url: "https://sg.luckincoffee.com/"
+    enabled: false
 
   - market_code: "KH"
     competitor_name: "Luckin Coffee"
@@ -239,5 +239,5 @@ competitors:
     competitor_name: "Luckin Coffee"
     competitor_initial: "L"
     scraper_class: LuckinScraper
-    url: "https://my.luckincoffee.com/"  # TODO: confirm URL
-    enabled: true
+    url: "https://my.luckincoffee.com/"
+    enabled: false
