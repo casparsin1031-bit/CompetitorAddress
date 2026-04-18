@@ -189,9 +189,9 @@ competitors:
   - market_code: "HK"
     competitor_name: "Luckin Coffee"
     competitor_initial: "L"
-    scraper_class: LuckinScraper
-    url: ""
-    enabled: false  # TODO: confirm if Luckin operates in HK
+    scraper_class: GoogleMapsScraper
+    url: "https://www.google.com/maps/search/Luckin+Coffee+Hong+Kong/?hl=en"
+    enabled: true
 
   - market_code: "TH"
     competitor_name: "Luckin Coffee"
@@ -241,3 +241,63 @@ competitors:
     scraper_class: LuckinScraper
     url: "https://my.luckincoffee.com/"
     enabled: false
+
+  # ─── Chagee (霸王茶姬) ────────────────────────────────────────────────────
+  # No official HK store-locator website; Google Maps used as data source.
+  # competitor_initial "H" = cH-agee (C is already taken by CHANGEE)
+
+  - market_code: "HK"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: "https://www.google.com/maps/search/CHAGEE+%E9%9C%B8%E7%8E%8B%E8%8C%B6%E5%A7%AC+Hong+Kong/?hl=en"
+    enabled: true
+
+  - market_code: "TH"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false  # TODO: confirm Chagee presence in Thailand
+
+  - market_code: "VN"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false  # TODO: confirm Chagee presence in Vietnam
+
+  - market_code: "MC"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false  # TODO: confirm Chagee presence in Macau
+
+  - market_code: "SG"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false  # TODO: confirm Chagee presence in Singapore
+
+  - market_code: "KH"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false
+
+  - market_code: "LA"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false
+
+  - market_code: "MY"
+    competitor_name: "Chagee"
+    competitor_initial: "H"
+    scraper_class: GoogleMapsScraper
+    url: ""
+    enabled: false  # TODO: confirm Chagee presence in Malaysia
