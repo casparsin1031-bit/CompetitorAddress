@@ -47,6 +47,7 @@ jobs:
       #    Requires a GitHub PAT stored as secret MAPLATLONG_TOKEN
       #    with read access to casparsin1031-bit/maplatlong.
       - name: Checkout maplatlong
+        if: ${{ github.event.inputs.no_enrich != 'true' }}
         uses: actions/checkout@v4
         with:
           repository: casparsin1031-bit/maplatlong
@@ -66,6 +67,7 @@ jobs:
 
       # ── 5. Install maplatlong dependencies (if it has its own requirements) ──
       - name: Install maplatlong dependencies
+        if: ${{ github.event.inputs.no_enrich != 'true' }}
         run: |
           if [ -f maplatlong/requirements.txt ]; then
             pip install -r maplatlong/requirements.txt
