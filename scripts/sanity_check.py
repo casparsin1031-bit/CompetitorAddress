@@ -95,6 +95,7 @@ def check_entry(
     month: str,
     cache_dir: Path = CACHE_DIR,
     output_csv: Path = OUTPUT_CSV,
+    skip_geo_check: bool = False,
 ) -> CheckResult:
     key = prefix(entry)
     label = f"{entry['competitor_name']} {entry['market_code']}"
@@ -142,7 +143,7 @@ def check_entry(
                     f"significant drop vs {months[0]} ({previous_count} -> {count}, {drop_pct:.0%})"
                 )
 
-    missing_geo = load_output_geo_missing(key, output_csv)
+    missing_geo = None if skip_geo_check else load_output_geo_missing(key, output_csv)
     if missing_geo is not None and count and missing_geo / count > 0.25:
         status = "fail"
         messages.append(f"too many missing lat/lon values ({missing_geo}/{count})")
@@ -182,12 +183,16 @@ def run_checks(
     cache_dir: Path = CACHE_DIR,
     output_csv: Path = OUTPUT_CSV,
     filter_term: str = "",
+    skip_geo_check: bool = False,
 ) -> list[CheckResult]:
     entries = [
         e for e in load_registry(registry_path)
         if entry_matches_filter(e, filter_term)
     ]
-    return [check_entry(e, month, cache_dir, output_csv) for e in entries]
+    return [
+        check_entry(e, month, cache_dir, output_csv, skip_geo_check)
+        for e in entries
+    ]
 
 
 def render_markdown(month: str, results: list[CheckResult]) -> str:
@@ -237,13 +242,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-csv", type=Path, default=OUTPUT_CSV)
     parser.add_argument("--reports-dir", type=Path, default=REPORTS_DIR)
     parser.add_argument("--filter", default="", help="Only check registry entries matching this term")
+    parser.add_argument("--skip-geo-check", action="store_true", help="Do not fail on missing lat/lon; useful for scrape-only tests")
     parser.add_argument("--write-report", action="store_true")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    results = run_checks(args.month, args.registry, args.cache_dir, args.output_csv, args.filter)
+    results = run_checks(
+        args.month,
+        args.registry,
+        args.cache_dir,
+        args.output_csv,
+        args.filter,
+        args.skip_geo_check,
+    )
     if args.write_report:
         md_path, json_path = write_reports(args.month, results, args.reports_dir)
         print(f"Wrote {md_path}")

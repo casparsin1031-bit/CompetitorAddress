@@ -57,6 +57,8 @@ def main() -> int:
     ]
     if args.filter:
         sanity_cmd.extend(["--filter", args.filter])
+    if args.no_enrich:
+        sanity_cmd.append("--skip-geo-check")
     sanity_rc = run(sanity_cmd)
     if sanity_rc != 0:
         print("Sanity check failed; monthly maintenance requires human review.")
