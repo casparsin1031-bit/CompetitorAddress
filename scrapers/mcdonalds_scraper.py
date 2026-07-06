@@ -17,9 +17,11 @@ import json
 import re
 from typing import List
 
+import requests
 from playwright.sync_api import sync_playwright, Page, Response
 
 from .base_scraper import BaseScraper, RawStore
+from .source_parsers import parse_mcd_th, parse_mcd_vn
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -96,7 +98,16 @@ class McDonaldsScraper(BaseScraper):
         re.IGNORECASE,
     )
 
+    _OFFICIAL_HTML_PARSERS = {
+        "TH": parse_mcd_th,
+        "VN": parse_mcd_vn,
+    }
+
     def scrape(self) -> List[RawStore]:
+        official = self._scrape_official_html()
+        if official:
+            return official
+
         captured: list[dict] = []
         self._sg_article_stores: List[RawStore] = []
 
@@ -158,6 +169,29 @@ class McDonaldsScraper(BaseScraper):
                 unique.append(s)
 
         return unique
+
+    def _scrape_official_html(self) -> List[RawStore]:
+        """Use deterministic official HTML parsers for markets with stable markup."""
+        parser = self._OFFICIAL_HTML_PARSERS.get(self.market_code.upper())
+        if parser is None:
+            return []
+        try:
+            response = requests.get(
+                self.url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    "Accept-Language": "en-US,en;q=0.9",
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            return parser(response.text)
+        except Exception:
+            return []
 
     # ------------------------------------------------------------------
     # Market-specific page interactions

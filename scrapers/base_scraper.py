@@ -8,11 +8,19 @@ from typing import List
 
 @dataclass
 class RawStore:
-    """Minimal store record as scraped from the competitor website."""
+    """Minimal store record as scraped from the competitor website.
+
+    `lat`/`lon` are optional because most generic scraper paths only return
+    text fields and the pipeline may enrich coordinates later.  Official
+    source-specific parsers populate them when the source exposes stable
+    coordinates.
+    """
     shop_name: str
     address: str
     phone: str = ""
     operating_hours: str = ""
+    lat: float | None = None
+    lon: float | None = None
 
 
 class BaseScraper(ABC):
