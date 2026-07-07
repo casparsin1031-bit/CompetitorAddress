@@ -26,6 +26,32 @@ def _coords_from_maps_url(url: str) -> tuple[float | None, float | None]:
     return None, None
 
 
+def parse_mcd_hk_api(data: dict[str, Any]) -> list[RawStore]:
+    """Parse McDonald's Hong Kong official admin-ajax restaurant payload."""
+    restaurants = data.get("restaurants", [])
+    if not isinstance(restaurants, list):
+        return []
+
+    stores: list[RawStore] = []
+    for item in restaurants:
+        if not isinstance(item, dict):
+            continue
+        name = clean(str(item.get("title") or item.get("name") or ""))
+        address = clean(str(item.get("address") or ""))
+        if not name and not address:
+            continue
+        lat = item.get("lat")
+        lon = item.get("lng") or item.get("lon")
+        stores.append(RawStore(
+            shop_name=name,
+            address=address,
+            phone=clean(str(item.get("telephone") or "")),
+            lat=float(lat) if lat not in (None, "") else None,
+            lon=float(lon) if lon not in (None, "") else None,
+        ))
+    return stores
+
+
 def parse_mcd_th(html: str) -> list[RawStore]:
     """Parse McDonald's Thailand official `.store-container` cards."""
     soup = BeautifulSoup(html, "html.parser")

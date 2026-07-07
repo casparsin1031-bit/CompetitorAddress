@@ -36,7 +36,7 @@ entries:
         status: fallback
         confidence: medium
     verification_notes:
-      - "2026-07-05: existing Playwright scraper returned 0 stores; treat this as a hard exception and use fallback discovery before monthly maintenance."
+      - "2026-07-07: official WordPress AJAX endpoint wp-admin/admin-ajax.php?action=get_restaurants returned 269 stores from type=init POST; addresses 269/269, coordinates 267/269."
 
   - market_code: TH
     competitor_name: "McDonald's"

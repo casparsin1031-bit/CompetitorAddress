@@ -1,12 +1,35 @@
 from __future__ import annotations
 
 from scrapers.source_parsers import (
+    parse_mcd_hk_api,
     parse_mcd_th,
     parse_mcd_vn,
     parse_sushiro_hk,
     parse_sushiro_sg,
     parse_sushiro_th,
 )
+
+
+def test_parse_mcd_hk_official_ajax_payload() -> None:
+    payload = {
+        "status": "success",
+        "restaurants": [
+            {
+                "title": "新世紀廣場",
+                "address": "九龍旺角太子道西193號MOKO新世紀廣場MTR樓層M19號舖\r\n",
+                "telephone": "2849 2555",
+                "lat": 22.3231937,
+                "lng": 114.1723194,
+            }
+        ],
+    }
+    rows = parse_mcd_hk_api(payload)
+    assert len(rows) == 1
+    assert rows[0].shop_name == "新世紀廣場"
+    assert rows[0].address == "九龍旺角太子道西193號MOKO新世紀廣場MTR樓層M19號舖"
+    assert rows[0].phone == "2849 2555"
+    assert rows[0].lat == 22.3231937
+    assert rows[0].lon == 114.1723194
 
 
 def test_parse_mcd_th_official_cards() -> None:

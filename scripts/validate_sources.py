@@ -50,6 +50,40 @@ def fetch(url: str) -> tuple[int, str]:
     return r.status_code, r.text
 
 
+def fetch_mcd_hk() -> tuple[int, list[dict]]:
+    """Fetch McDonald's HK official WordPress AJAX store list."""
+    r = requests.post(
+        "https://mcdonalds.com.hk/wp-admin/admin-ajax.php",
+        params={"action": "get_restaurants"},
+        data={"type": "init"},
+        headers={
+            **HEADERS,
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Origin": "https://mcdonalds.com.hk",
+            "Referer": "https://mcdonalds.com.hk/en/find-a-restaurant/",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        timeout=30,
+    )
+    data = r.json() if r.status_code == 200 else {}
+    restaurants = data.get("restaurants", []) if isinstance(data, dict) else []
+    stores: list[dict] = []
+    if isinstance(restaurants, list):
+        for item in restaurants:
+            if not isinstance(item, dict):
+                continue
+            stores.append({
+                "shop_name": clean(str(item.get("title") or "")),
+                "address": clean(str(item.get("address") or "")),
+                "phone": clean(str(item.get("telephone") or "")),
+                "lat": item.get("lat"),
+                "lon": item.get("lng"),
+                "source_url": "https://mcdonalds.com.hk/wp-admin/admin-ajax.php?action=get_restaurants",
+            })
+    return r.status_code, stores
+
+
 def parse_mcd_th(html: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     stores = []
@@ -173,6 +207,45 @@ def validate() -> list[SourceResult]:
         ("SGS", "Sushiro", "SG", "official", "https://www.sushiro.com.sg/contact-location/", parse_sushiro_sg, (5, 80), "official Elementor page contains one card per store with maps links"),
     ]
     results: list[SourceResult] = []
+
+    try:
+        code, rows = fetch_mcd_hk()
+        expected = (150, 350)
+        plausible = expected[0] <= len(rows) <= expected[1]
+        complete_addr = sum(1 for r in rows if r.get("address"))
+        complete_coords = sum(1 for r in rows if r.get("lat") not in (None, "") and r.get("lon") not in (None, ""))
+        confidence = "high" if code == 200 and plausible and complete_addr == len(rows) else "medium" if rows else "low"
+        notes = (
+            "official WordPress AJAX endpoint returns restaurants; "
+            f"expected {expected[0]}-{expected[1]}; addresses {complete_addr}/{len(rows)}; "
+            f"coordinates {complete_coords}/{len(rows)}"
+        )
+        results.append(SourceResult(
+            "HKM",
+            "McDonald's",
+            "HK",
+            "official_ajax",
+            "https://mcdonalds.com.hk/en/find-a-restaurant/",
+            code,
+            len(rows),
+            confidence,
+            notes,
+            rows[:3],
+        ))
+    except Exception as exc:
+        results.append(SourceResult(
+            "HKM",
+            "McDonald's",
+            "HK",
+            "official_ajax",
+            "https://mcdonalds.com.hk/en/find-a-restaurant/",
+            None,
+            0,
+            "low",
+            f"validation failed: {exc}",
+            [],
+        ))
+
     for key, comp, market, source_type, url, parser, expected, note in specs:
         try:
             code, html = fetch(url)
@@ -184,19 +257,6 @@ def validate() -> list[SourceResult]:
             results.append(SourceResult(key, comp, market, source_type, url, code, len(rows), confidence, notes, rows[:3]))
         except Exception as exc:
             results.append(SourceResult(key, comp, market, source_type, url, None, 0, "low", f"validation failed: {exc}", []))
-    # HK McDonald's official AJAX is blocked from non-browser/server-side use; record as fallback-needed.
-    results.append(SourceResult(
-        "HKM",
-        "McDonald's",
-        "HK",
-        "official_ajax_blocked / google_maps_fallback",
-        "https://mcdonalds.com.hk/en/find-a-restaurant/",
-        200,
-        0,
-        "low",
-        "Official page loads but wp-admin admin-ajax.php?action=get_restaurants returns 403 in requests and Playwright; fallback Google Maps scrape found 114 records locally but appears partial vs expected 150-350.",
-        [],
-    ))
     return results
 
 
