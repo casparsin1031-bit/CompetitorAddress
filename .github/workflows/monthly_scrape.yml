@@ -47,6 +47,7 @@ jobs:
       #    Requires a GitHub PAT stored as secret MAPLATLONG_TOKEN
       #    with read access to casparsin1031-bit/maplatlong.
       - name: Checkout maplatlong
+        if: ${{ github.event.inputs.no_enrich != 'true' }}
         uses: actions/checkout@v4
         with:
           repository: casparsin1031-bit/maplatlong
@@ -66,6 +67,7 @@ jobs:
 
       # ── 5. Install maplatlong dependencies (if it has its own requirements) ──
       - name: Install maplatlong dependencies
+        if: ${{ github.event.inputs.no_enrich != 'true' }}
         run: |
           if [ -f maplatlong/requirements.txt ]; then
             pip install -r maplatlong/requirements.txt
@@ -75,8 +77,11 @@ jobs:
       - name: Install Playwright Chromium
         run: playwright install chromium --with-deps
 
-      # ── 7. Run pipeline ───────────────────────────────────────────────────
-      - name: Run pipeline
+      # ── 7. Run pipeline + sanity gate ─────────────────────────────────────
+      #    Monthly maintenance is allowed only when sanity checks pass.
+      #    Zero-store results, significant drops, too many missing addresses, or
+      #    bad geocoding coverage fail the job and require human/agent review.
+      - name: Run monthly agent maintenance
         env:
           MAPLATLONG_DIR: ./maplatlong
           PYTHONUNBUFFERED: "1"
@@ -91,25 +96,28 @@ jobs:
           if [ "${{ github.event.inputs.no_enrich }}" = "true" ]; then
             ARGS="$ARGS --no-enrich"
           fi
-          python pipeline.py $ARGS
+          python scripts/monthly_agent_maintain.py $ARGS
 
-      # ── 8. Upload output as artifact ─────────────────────────────────────
-      - name: Upload dimension table artifact
+      # ── 8. Upload output + sanity report as artifact ─────────────────────
+      - name: Upload dimension table and sanity report artifacts
         uses: actions/upload-artifact@v4
         with:
           name: competitor-dim-${{ github.run_id }}
-          path: output/
+          path: |
+            output/
+            reports/
           retention-days: 90
 
-      # ── 9. Commit output + cache back to the branch ───────────────────────
+      # ── 9. Commit output + cache + reports back to the branch ─────────────
+      #    This step only runs after the sanity gate passes.
       #    PowerBI can then refresh by pulling the latest Parquet/CSV.
       - name: Commit and push output
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           # Stage output and cache (cache is gitignored locally but we commit it in CI
-          # to preserve the monthly snapshot; remove if storage is a concern)
-          git add --force output/ cache/ || true
+          # to preserve monthly snapshots), plus sanity reports for auditability.
+          git add --force output/ cache/ reports/ || true
           MONTH=$(date +%Y-%m)
           git commit -m "data: monthly competitor store refresh ${MONTH} [skip ci]" || echo "Nothing to commit"
           git push origin HEAD

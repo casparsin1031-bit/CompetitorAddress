@@ -1,0 +1,137 @@
+[
+  {
+    "key": "HKM",
+    "label": "McDonald's HK",
+    "status": "pass",
+    "count": 269,
+    "min_expected": 150,
+    "max_expected": 350,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "THM",
+    "label": "McDonald's TH",
+    "status": "pass",
+    "count": 233,
+    "min_expected": 50,
+    "max_expected": 400,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "VNM",
+    "label": "McDonald's VN",
+    "status": "pass",
+    "count": 49,
+    "min_expected": 10,
+    "max_expected": 80,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "SGM",
+    "label": "McDonald's SG",
+    "status": "pass",
+    "count": 155,
+    "min_expected": 80,
+    "max_expected": 200,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "HKS",
+    "label": "Sushiro HK",
+    "status": "pass",
+    "count": 43,
+    "min_expected": 15,
+    "max_expected": 80,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "THS",
+    "label": "Sushiro TH",
+    "status": "pass",
+    "count": 48,
+    "min_expected": 5,
+    "max_expected": 80,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "SGS",
+    "label": "Sushiro SG",
+    "status": "pass",
+    "count": 23,
+    "min_expected": 5,
+    "max_expected": 80,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "HKL",
+    "label": "Luckin Coffee HK",
+    "status": "pass",
+    "count": 21,
+    "min_expected": 1,
+    "max_expected": 80,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  },
+  {
+    "key": "HKH",
+    "label": "Chagee HK",
+    "status": "pass",
+    "count": 43,
+    "min_expected": 1,
+    "max_expected": 100,
+    "previous_count": null,
+    "drop_pct": null,
+    "missing_address_count": 0,
+    "missing_geo_count": null,
+    "messages": [
+      "ok"
+    ]
+  }
+]

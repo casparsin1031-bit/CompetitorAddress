@@ -1,0 +1,195 @@
+# Agent-maintained competitor source registry
+#
+# Purpose
+# -------
+# This file is the durable record the agent uses to decide whether a monthly
+# competitor-store refresh is trustworthy enough to maintain automatically.
+#
+# Rules
+# -----
+# - Prefer official store locators / official app endpoints.
+# - If official source is absent, blocked, or returns implausible results, use
+#   secondary sources such as Google Maps, OpenRice, Grab, Keeta, mall
+#   directories, or official social/press pages as evidence.
+# - A monthly cron may commit/publish output only when sanity checks pass.
+# - Zero-store results and significant drops are exceptions requiring review.
+#
+# Count ranges below are intentionally broad initial guardrails. They should be
+# tightened as monthly history accumulates.
+
+entries:
+  - market_code: HK
+    competitor_name: "McDonald's"
+    competitor_initial: M
+    enabled: true
+    expected_store_count:
+      min: 150
+      max: 350
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://mcdonalds.com.hk/en/find-a-restaurant/"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "McDonald's Hong Kong"
+        status: fallback
+        confidence: medium
+    verification_notes:
+      - "2026-07-07: official WordPress AJAX endpoint wp-admin/admin-ajax.php?action=get_restaurants returned 269 stores from type=init POST; addresses 269/269, coordinates 267/269."
+
+  - market_code: TH
+    competitor_name: "McDonald's"
+    competitor_initial: M
+    enabled: true
+    expected_store_count:
+      min: 50
+      max: 400
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://www.mcdonalds.co.th/storeLocations"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "McDonald's Thailand"
+        status: fallback
+        confidence: medium
+
+  - market_code: VN
+    competitor_name: "McDonald's"
+    competitor_initial: M
+    enabled: true
+    expected_store_count:
+      min: 10
+      max: 80
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://mcdonalds.vn/restaurants.html"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "McDonald's Vietnam"
+        status: fallback
+        confidence: medium
+
+  - market_code: SG
+    competitor_name: "McDonald's"
+    competitor_initial: M
+    enabled: true
+    expected_store_count:
+      min: 80
+      max: 200
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official_support_article
+        url: "https://custcare.mcdonalds.com.sg/hc/en-us/articles/11875954072857-McDonald-s-Store-Addresses-and-Contact-Details"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "McDonald's Singapore"
+        status: fallback
+        confidence: medium
+
+  - market_code: HK
+    competitor_name: Sushiro
+    competitor_initial: S
+    enabled: true
+    expected_store_count:
+      min: 15
+      max: 80
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://sushirohk.com.hk/tc/shop.php?wid=3&cid=1"
+        status: active
+        confidence: high
+      - type: openrice
+        query: "Sushiro Hong Kong"
+        status: fallback
+        confidence: medium
+      - type: google_maps
+        query: "Sushiro Hong Kong"
+        status: fallback
+        confidence: medium
+
+  - market_code: TH
+    competitor_name: Sushiro
+    competitor_initial: S
+    enabled: true
+    expected_store_count:
+      min: 5
+      max: 80
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://sushiro.co.th/branch/"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "Sushiro Thailand"
+        status: fallback
+        confidence: medium
+
+  - market_code: SG
+    competitor_name: Sushiro
+    competitor_initial: S
+    enabled: true
+    expected_store_count:
+      min: 5
+      max: 80
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official
+        url: "https://www.sushiro.com.sg/contact-location/"
+        status: active
+        confidence: high
+      - type: google_maps
+        query: "Sushiro Singapore"
+        status: fallback
+        confidence: medium
+
+  - market_code: HK
+    competitor_name: "Luckin Coffee"
+    competitor_initial: L
+    enabled: true
+    expected_store_count:
+      min: 1
+      max: 80
+    significant_drop_pct: 0.50
+    source_priority:
+      - type: google_maps
+        query: "Luckin Coffee Hong Kong"
+        status: primary
+        confidence: medium
+      - type: official_app_or_site
+        url: ""
+        status: absent_or_unconfirmed
+        confidence: low
+    verification_notes:
+      - "Official HK store locator not confirmed; Google Maps currently acts as primary source."
+
+  - market_code: HK
+    competitor_name: Chagee
+    competitor_initial: H
+    enabled: true
+    expected_store_count:
+      min: 1
+      max: 100
+    significant_drop_pct: 0.50
+    source_priority:
+      - type: google_maps
+        query: "CHAGEE 霸王茶姬 Hong Kong"
+        status: primary
+        confidence: medium
+      - type: openrice
+        query: "霸王茶姬 Hong Kong"
+        status: fallback
+        confidence: medium
+      - type: official_app_or_site
+        url: ""
+        status: absent_or_unconfirmed
+        confidence: low
+    verification_notes:
+      - "No confirmed official HK store-locator page; secondary source cross-check required."

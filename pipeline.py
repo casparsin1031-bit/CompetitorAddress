@@ -42,6 +42,7 @@ import yaml
 
 from enrichment.maplatlong_client import lookup as geo_lookup
 from scrapers import REGISTRY
+from scrapers.source_parsers import to_plain_dict
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Paths
@@ -119,15 +120,7 @@ def scrape_entry(entry: dict) -> list[dict]:
     log.info("  Scraping %s %s via %s …", entry["competitor_name"], entry["market_code"], cls_name)
     raw_stores = scraper.scrape()
 
-    return [
-        {
-            "shop_name": s.shop_name,
-            "address": s.address,
-            "phone": s.phone,
-            "operating_hours": s.operating_hours,
-        }
-        for s in raw_stores
-    ]
+    return [to_plain_dict(s) for s in raw_stores]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -153,10 +146,25 @@ def build_dim_rows(
     for seq, store in enumerate(raw_stores, start=1):
         shop_id = f"{prefix}{seq:05d}"
 
-        geo = {"lat": None, "lon": None, "province": None, "city": None, "district": None}
+        geo = {
+            "lat": store.get("lat"),
+            "lon": store.get("lon"),
+            "province": None,
+            "city": None,
+            "district": None,
+        }
         if enrich:
             try:
-                geo = geo_lookup(store["shop_name"], store["address"])
+                enriched_geo = geo_lookup(store["shop_name"], store["address"])
+                # Prefer enrichment's administrative fields but retain official
+                # source coordinates if the lookup does not return coordinates.
+                geo = {
+                    "lat": enriched_geo.get("lat") if enriched_geo.get("lat") is not None else store.get("lat"),
+                    "lon": enriched_geo.get("lon") if enriched_geo.get("lon") is not None else store.get("lon"),
+                    "province": enriched_geo.get("province"),
+                    "city": enriched_geo.get("city"),
+                    "district": enriched_geo.get("district"),
+                }
             except Exception as exc:
                 log.warning("    geo_lookup failed for %s: %s", shop_id, exc)
 

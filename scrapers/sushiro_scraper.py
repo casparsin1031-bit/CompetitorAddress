@@ -19,9 +19,11 @@ import json
 import re
 from typing import List
 
+import requests
 from playwright.sync_api import sync_playwright, Page, Response
 
 from .base_scraper import BaseScraper, RawStore
+from .source_parsers import parse_sushiro_hk, parse_sushiro_sg, parse_sushiro_th
 
 
 class SushiroScraper(BaseScraper):
@@ -32,7 +34,17 @@ class SushiroScraper(BaseScraper):
         re.IGNORECASE,
     )
 
+    _OFFICIAL_HTML_PARSERS = {
+        "HK": parse_sushiro_hk,
+        "TH": parse_sushiro_th,
+        "SG": parse_sushiro_sg,
+    }
+
     def scrape(self) -> List[RawStore]:
+        official = self._scrape_official_html()
+        if official:
+            return official
+
         captured: list[dict] = []
 
         with sync_playwright() as p:
@@ -78,6 +90,29 @@ class SushiroScraper(BaseScraper):
             browser.close()
 
         return stores
+
+    def _scrape_official_html(self) -> List[RawStore]:
+        """Use deterministic official HTML parsers for markets with stable markup."""
+        parser = self._OFFICIAL_HTML_PARSERS.get(self.market_code.upper())
+        if parser is None:
+            return []
+        try:
+            response = requests.get(
+                self.url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/124.0.0.0 Safari/537.36"
+                    ),
+                    "Accept-Language": "en-US,en;q=0.9",
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            return parser(response.text)
+        except Exception:
+            return []
 
     def _parse_api(self, data) -> List[RawStore]:
         stores: List[RawStore] = []
