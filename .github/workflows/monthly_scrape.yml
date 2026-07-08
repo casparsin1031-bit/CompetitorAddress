@@ -29,6 +29,12 @@ on:
           - "false"
           - "true"
 
+# Required because the workflow commits refreshed output/cache/reports back to
+# the repository. Without this, the default GITHUB_TOKEN can be read-only and
+# `git push` fails with: Permission denied to github-actions[bot].
+permissions:
+  contents: write
+
 jobs:
   scrape:
     name: Scrape & Enrich Competitor Stores
