@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CompetitorAddress New Brand Request</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: #1f2937;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --line: #334155;
+      --accent: #38bdf8;
+      --accent2: #f59e0b;
+      --good: #22c55e;
+      --bad: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #1e3a8a 0, transparent 32rem), var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    header {
+      padding: 28px clamp(16px, 3vw, 42px) 10px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 4vw, 42px); letter-spacing: -0.04em; }
+    .sub { color: var(--muted); max-width: 920px; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+      gap: 18px;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px clamp(16px, 3vw, 42px) 38px;
+    }
+    @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+    section {
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.24);
+      overflow: hidden;
+    }
+    .section-head { padding: 18px 20px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.025); }
+    .section-head h2 { margin: 0; font-size: 18px; }
+    .section-head p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    form { padding: 18px 20px 22px; display: grid; gap: 16px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+    label { display: grid; gap: 6px; font-size: 13px; color: #cbd5e1; }
+    input, textarea, select {
+      width: 100%;
+      background: #0b1220;
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,.12); }
+    fieldset { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 0; }
+    legend { color: #cbd5e1; padding: 0 6px; font-size: 13px; }
+    .checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+    .check { display: flex; gap: 8px; align-items: center; color: #dbeafe; font-size: 13px; }
+    .check input { width: auto; }
+    .hint { color: var(--muted); font-size: 12px; }
+    .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--line); background: rgba(255,255,255,.02); }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 15px;
+      color: #07111f;
+      background: var(--accent);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary { background: #334155; color: var(--text); }
+    button.warning { background: var(--accent2); }
+    .status { color: var(--muted); font-size: 13px; }
+    .preview-wrap { padding: 18px 20px 22px; display: grid; gap: 14px; }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #060b14;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 520px;
+      color: #e2e8f0;
+      font-size: 13px;
+    }
+    .pillrow { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { border: 1px solid var(--line); border-radius: 999px; padding: 5px 9px; color: var(--muted); font-size: 12px; }
+    .required::after { content: " *"; color: var(--accent2); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CompetitorAddress New Brand Request</h1>
+    <p class="sub">Fill this in, copy the generated prompt, and paste it to Hermes. It is designed to let Hermes assess new competitor brands smoothly: official source first, fallback only with approval, and no monthly automation until sanity gates pass.</p>
+  </header>
+
+  <main>
+    <section>
+      <div class="section-head">
+        <h2>1. Intake parameters</h2>
+        <p>Minimum fields are brand, markets, category, and workflow mode. Add expectations/source hints if you know them.</p>
+      </div>
+      <form id="brandForm">
+        <div class="grid2">
+          <label><span class="required">Brand name</span><input id="brand" placeholder="e.g. KFC, Genki Sushi, Blue Bottle" required /></label>
+          <label><span class="required">Category</span><input id="category" placeholder="e.g. QSR, sushi, coffee, tea/drink" required /></label>
+        </div>
+        <div class="grid2">
+          <label><span class="required">Target markets</span><input id="markets" placeholder="e.g. HK, SG, TH, VN" required /></label>
+          <label>Priority / business reason<input id="reason" placeholder="e.g. QSR competitor for regional benchmark" /></label>
+        </div>
+        <div class="grid2">
+          <label>Expected count range<input id="expected" placeholder="e.g. HK 60-130; SG 30-80; unknown" /></label>
+          <label>Known official URL / app / source<input id="sourceHint" placeholder="Paste known locator URL, if any" /></label>
+        </div>
+        <label>Fallback tolerance
+          <select id="fallback">
+            <option value="Official source only. If official source is absent, stop and ask Caspar before using fallback sources.">Official only — ask before fallback</option>
+            <option value="Fallback sources are allowed for assessment only, but require Caspar approval before repo changes or monthly maintenance.">Fallback allowed for assessment only</option>
+            <option value="Fallback sources may be proposed as primary only with explicit approval and strong cross-check evidence.">Fallback may be proposed, approval required</option>
+          </select>
+        </label>
+        <label>Workflow mode
+          <select id="mode">
+            <option value="Quick source assessment only. Do not modify files yet.">Quick source assessment only</option>
+            <option value="Prepare repo changes only if source quality is strong; show diff summary and ask before commit/publish.">Prepare repo changes if safe</option>
+            <option value="Full onboarding after approval: registry/config/scraper/tests/sanity, but still ask before enabling fallback-only monthly automation.">Full onboarding after approval</option>
+            <option value="Local competitor scan only; candidate discovery, not monthly tracking.">Local competitor scan only</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend>Checks Hermes should run</legend>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="checkOfficial" checked /> Official locator/API</label>
+            <label class="check"><input type="checkbox" id="checkFallback" checked /> Fallback cross-check</label>
+            <label class="check"><input type="checkbox" id="checkCount" checked /> Count plausibility</label>
+            <label class="check"><input type="checkbox" id="checkAddress" checked /> Address completeness</label>
+            <label class="check"><input type="checkbox" id="checkGeo" /> Geo readiness</label>
+            <label class="check"><input type="checkbox" id="checkRepo" /> Repo diff proposal</label>
+          </div>
+        </fieldset>
+        <label>Special notes / constraints<textarea id="notes" placeholder="e.g. Avoid Google Maps as primary unless no official source. Use HK only first. Ask me before adding monthly cron."></textarea></label>
+      </form>
+      <div class="bar">
+        <button type="button" onclick="generatePrompt()">Generate prompt</button>
+        <button type="button" class="warning" onclick="copyPrompt()">Copy prompt</button>
+        <button type="button" class="secondary" onclick="resetDemo()">Reset</button>
+        <span class="status" id="status">Ready.</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>2. Prompt to paste into Hermes</h2>
+        <p>This is the command/request that triggers the research/onboarding flow.</p>
+      </div>
+      <div class="preview-wrap">
+        <div class="pillrow">
+          <span class="pill">Official first</span>
+          <span class="pill">HITL for fallback</span>
+          <span class="pill">Sanity before publish</span>
+          <span class="pill">No silent repo pollution</span>
+        </div>
+        <pre id="preview"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const fields = ["brand", "category", "markets", "reason", "expected", "sourceHint", "fallback", "mode", "notes", "checkOfficial", "checkFallback", "checkCount", "checkAddress", "checkGeo", "checkRepo"];
+
+    function val(id) {
+      const el = document.getElementById(id);
+      if (!el) return "";
+      if (el.type === "checkbox") return el.checked;
+      return (el.value || "").trim();
+    }
+
+    function selectedChecks() {
+      const checks = [];
+      if (val("checkOfficial")) checks.push("discover and validate official locator/API/static HTML first");
+      if (val("checkFallback")) checks.push("cross-check fallback sources such as Google Maps, OpenRice, mall directories, official social/press pages only as evidence");
+      if (val("checkCount")) checks.push("estimate observed count and compare against expected/plausible range");
+      if (val("checkAddress")) checks.push("measure address completeness and show sample rows");
+      if (val("checkGeo")) checks.push("assess geocoding/lat-lon readiness, but allow scrape-only mode if geocoding is not ready");
+      if (val("checkRepo")) checks.push("if safe, propose registry/config/scraper/test changes and show a diff summary before commit/publish");
+      return checks;
+    }
+
+    function generatePrompt() {
+      const brand = val("brand") || "[BRAND]";
+      const markets = val("markets") || "[MARKETS]";
+      const category = val("category") || "[CATEGORY]";
+      const checks = selectedChecks();
+      const prompt = `Use the competitor-store-intelligence process for a new brand request.\n\nBrand: ${brand}\nTarget markets: ${markets}\nCategory / competitor type: ${category}\nBusiness reason: ${val("reason") || "not specified"}\nExpected count / range: ${val("expected") || "unknown; derive conservative range from evidence and ask before loosening gates"}\nKnown source hint: ${val("sourceHint") || "none provided"}\nWorkflow mode: ${val("mode")}\nFallback policy: ${val("fallback")}\nSpecial notes: ${val("notes") || "none"}\n\nPlease do this in a controlled onboarding flow:\n1. Inspect the existing CompetitorAddress repo/config/registry before changing anything.\n2. Run source discovery for each brand-market pair.\n3. Checks to run:\n${checks.map(c => "   - " + c).join("\n")}\n4. Return a decision table with: market, official source, fallback source, observed count, expected range, address completeness, confidence, risk, and recommendation.\n5. Recommend one of: onboard, hold as candidate/manual review, reject/no confirmed presence, or ask Caspar for approval.\n6. Do not add the brand to monthly maintenance unless source quality is strong and sanity gates pass.\n7. Ask before using fallback-only source as primary, changing expected thresholds, committing/publishing output, or enabling automation.\n8. If repo changes are allowed by the workflow mode, create them only after evidence supports the change, then run scrape-only validation and sanity check.\n\nPreferred final response: concise PASS/HOLD/FAIL recommendation plus exact next action for Caspar to approve.`;
+      document.getElementById("preview").textContent = prompt;
+      document.getElementById("status").textContent = "Prompt generated.";
+      return prompt;
+    }
+
+    async function copyPrompt() {
+      const text = generatePrompt();
+      try {
+        await navigator.clipboard.writeText(text);
+        document.getElementById("status").textContent = "Copied to clipboard.";
+      } catch (err) {
+        document.getElementById("status").textContent = "Copy blocked by browser. Select the preview and copy manually.";
+      }
+    }
+
+    function resetDemo() {
+      document.getElementById("brandForm").reset();
+      document.getElementById("preview").textContent = "";
+      document.getElementById("status").textContent = "Ready.";
+      generatePrompt();
+    }
+
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", generatePrompt);
+      if (el) el.addEventListener("change", generatePrompt);
+    });
+    generatePrompt();
+  </script>
+</body>
+</html>

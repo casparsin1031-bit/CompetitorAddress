@@ -1,0 +1,182 @@
+# Source validation — CompetitorAddress
+
+Validated official/fallback sources for entries that failed the current Playwright scraper.
+
+| Key | Source | Count | Confidence | Notes |
+|---|---|---:|---|---|
+| `HKM` | official_ajax: https://mcdonalds.com.hk/en/find-a-restaurant/ | 268 | high | official WordPress AJAX endpoint returns restaurants; expected 150-350; addresses 268/268; coordinates 268/268 |
+| `HKS` | official: https://sushirohk.com.hk/tc/shop.php?wid=3&cid=1 | 44 | high | official HTML contains .store-list-box-wrapper cards; expected 15-80; addresses 44/44 |
+| `SGS` | official: https://www.sushiro.com.sg/contact-location/ | 24 | high | official Elementor page contains one card per store with maps links; expected 5-80; addresses 24/24 |
+| `THM` | official: https://www.mcdonalds.co.th/storeLocations | 233 | high | official HTML contains .store-container cards with lat/lon; expected 50-400; addresses 233/233 |
+| `THS` | official: https://sushiro.co.th/branch/ | 49 | high | official HTML contains .box-branch--detail cards; expected 5-80; addresses 49/49 |
+| `VNM` | official: https://mcdonalds.vn/restaurants.html | 49 | high | official HTML contains store cards and Google Maps coordinates; expected 10-80; addresses 49/49 |
+
+## Samples
+
+### HKM — McDonald's HK
+
+```json
+[
+  {
+    "shop_name": "新世紀廣場",
+    "address": "九龍旺角太子道西193號MOKO新世紀廣場MTR樓層M19號舖",
+    "phone": "2849 2555",
+    "lat": 22.3231937,
+    "lon": 114.1723194,
+    "source_url": "https://mcdonalds.com.hk/wp-admin/admin-ajax.php?action=get_restaurants"
+  },
+  {
+    "shop_name": "富榮花園",
+    "address": "九龍旺角西富榮花園地下66A號舖",
+    "phone": "21756362",
+    "lat": 22.3143219,
+    "lon": 114.1631178,
+    "source_url": "https://mcdonalds.com.hk/wp-admin/admin-ajax.php?action=get_restaurants"
+  },
+  {
+    "shop_name": "文華商場",
+    "address": "九龍旺角奶路臣街11號及240-244號砵蘭街文華商場(MPM)1樓A舖",
+    "phone": "35144562",
+    "lat": 22.3185296,
+    "lon": 114.1690628,
+    "source_url": "https://mcdonalds.com.hk/wp-admin/admin-ajax.php?action=get_restaurants"
+  }
+]
+```
+
+### HKS — Sushiro HK
+
+```json
+[
+  {
+    "shop_name": "康城店",
+    "address": "新界將軍澳康城路1號The LOHAS康城4樓406C號舖",
+    "phone": "2665 0688"
+  },
+  {
+    "shop_name": "九龍灣淘大店",
+    "address": "九龍九龍灣牛頭角道77號淘大商場1期2樓S150號舖",
+    "phone": "2789 8028"
+  },
+  {
+    "shop_name": "黃埔時尚坊店",
+    "address": "九龍紅磡黃埔天地時尚坊(第二期)地下G42-G43號舖",
+    "phone": "​2365 0888"
+  }
+]
+```
+
+### SGS — Sushiro SG
+
+```json
+[
+  {
+    "shop_name": "Sushiro Tiong Bahru Plaza",
+    "address": "302 Tiong Bahru Road, #02-118 Tiong Bahru Plaza, Singapore 168732",
+    "operating_hours": "11:00AM – 10:00PM",
+    "source_url": "https://maps.app.goo.gl/uCTvx2GBbFi4w1hN9"
+  },
+  {
+    "shop_name": "Sushiro Wisma Atria",
+    "address": "435 Orchard Rd, #02-08 to 13 Wisma Atria, Singapore 238877",
+    "operating_hours": "11:00AM – 10:00PM",
+    "source_url": "https://maps.app.goo.gl/49gfFijRL55twKPU8"
+  },
+  {
+    "shop_name": "Sushiro Isetan Scotts",
+    "address": "350 Orchard Road, #03-K1/K2, part of #03-00 Shaw House, Singapore 238868",
+    "operating_hours": "11:00AM – 10:00PM",
+    "source_url": "https://maps.app.goo.gl/RZuV1fNMZKxJ5mcM7"
+  }
+]
+```
+
+### THM — McDonald's TH
+
+```json
+[
+  {
+    "shop_name": "CENTER ONE",
+    "address": "1001 Soi Lertpanya, Rajvithee Road, Phayathai, Ratchathevi, Bangkok 10400",
+    "lat": "13.764251",
+    "lon": "100.539441",
+    "source_url": "https://www.mcdonalds.co.th/storeLocations/5bd50c0facc28a76f33fe1bd"
+  },
+  {
+    "shop_name": "PACIFIC PARK SRIRACHA",
+    "address": "90 Sukhumvit Road, KM. 118, Sriracha, Chonburi 20110",
+    "lat": "13.167498",
+    "lon": "100.930645",
+    "source_url": "https://www.mcdonalds.co.th/storeLocations/5bd51430acc28a4209293d69"
+  },
+  {
+    "shop_name": "BIG C EXTRA SRINAKARIN",
+    "address": "425 Moo 5 Srinakarin Road, Sumrong Nua, Muang, Samut Prakarn 10270",
+    "lat": "13.649375",
+    "lon": "100.640991",
+    "source_url": "https://www.mcdonalds.co.th/storeLocations/5bd5d4adacc28a3cfb04e662"
+  }
+]
+```
+
+### THS — Sushiro TH
+
+```json
+[
+  {
+    "shop_name": "สาขา The Walk Kaset – Nawamin",
+    "address": "1st Floor",
+    "operating_hours": "Mon - Thu 11.00 - 22.00",
+    "phone": "Fri - Sun 10.30 - 22.00",
+    "source_url": "https://maps.app.goo.gl/93Rab4B1FXrR3tW19?g_st=ic"
+  },
+  {
+    "shop_name": "สาขา True Digital Park",
+    "address": "3rd Floor",
+    "operating_hours": "Everyday 10.00 - 22.00",
+    "phone": "02-090-9744",
+    "source_url": "https://maps.app.goo.gl/SpMA3b83GZQRxvgTA"
+  },
+  {
+    "shop_name": "สาขา Central Bangna",
+    "address": "5th Floor",
+    "operating_hours": "Mon-Thu 10.30 - 21.00 Fri 10.30 - 22.00 Sat 10.00 - 22.00 Sun ,Holidays 10.00 - 21.00",
+    "phone": "02-030-2181",
+    "source_url": "https://maps.app.goo.gl/vPD2LZaMy5ApK5Yc9"
+  }
+]
+```
+
+### VNM — McDonald's VN
+
+```json
+[
+  {
+    "shop_name": "McDonald's Gold Coast",
+    "address": "L11-15- Gold Coast Mall, 01 Tran Hung Dao Street, Nha Trang City",
+    "phone": "0979794900",
+    "operating_hours": "9:00 AM - 10:00 PM",
+    "lat": "12.248386",
+    "lon": "109.194451",
+    "source_url": "https://www.google.com/maps/place/12.248386, 109.194451"
+  },
+  {
+    "shop_name": "McDonald's Long Beach Center",
+    "address": "124 Tran Hung Dao Street, Duong Dong Ward, Phu Quoc City",
+    "phone": "+84 969992849",
+    "operating_hours": "7:00 AM - 11:00 PM",
+    "lat": "10.1913192",
+    "lon": "103.9639574",
+    "source_url": "https://www.google.com/maps/place/10.1913192, 103.9639574"
+  },
+  {
+    "shop_name": "McDonald's Nguyen Van Thoai",
+    "address": "229 Nguyen Van Thoai, An Hai Ward, Da Nang City",
+    "phone": "0387878566",
+    "operating_hours": "7:00 AM - 00:00 AM",
+    "lat": "16.0559624",
+    "lon": "108.2453241",
+    "source_url": "https://www.google.com/maps/place/16.0559624, 108.2453241"
+  }
+]
+```

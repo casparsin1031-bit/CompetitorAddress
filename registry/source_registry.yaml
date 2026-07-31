@@ -193,3 +193,24 @@ entries:
         confidence: low
     verification_notes:
       - "No confirmed official HK store-locator page; secondary source cross-check required."
+
+  - market_code: HK
+    competitor_name: Fairwood
+    competitor_initial: F
+    enabled: true
+    expected_store_count:
+      min: 80
+      max: 200
+    significant_drop_pct: 0.35
+    source_priority:
+      - type: official_nextjs
+        url: "https://www.fairwood.com.hk/en/stores"
+        status: active
+        confidence: high
+      - type: openrice
+        query: "Fairwood Hong Kong"
+        status: evidence_only
+        confidence: medium
+    verification_notes:
+      - "2026-07-31: official Next.js __NEXT_DATA__ props.pageProps.data.stores returned 151 stores; addresses 151/151, coordinates 151/151, phones 151/151."
+      - "2026-07-31: Caspar approved including Fairwood HK after live scrape and tests passed; official Next.js source set active and monthly output includes HKF."

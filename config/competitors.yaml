@@ -2,13 +2,13 @@
 #
 # shop_id format: {market_code}{competitor_initial}{seq:05d}
 #   market_code        : 2-letter code  (HK, TH, VN, MC, SG, KH, LA, MY)
-#   competitor_initial : 1-letter code  (M=McDonald's, C=CHANGEE, S=Sushiro, L=Luckin)
+#   competitor_initial : 1-letter code  (M=McDonald's, C=CHANGEE, S=Sushiro, L=Luckin, F=Fairwood)
 #   seq                : 5-digit zero-padded sequence (per competitor-market, 1-indexed)
 #
 # Example: HKM00001 = McDonald's HK, shop #1
 #
 # scraper_class options:
-#   McDonaldsScraper | ChangeeScraper | SushiroScraper | LuckinScraper
+#   McDonaldsScraper | ChangeeScraper | SushiroScraper | LuckinScraper | FairwoodScraper
 #
 # enabled: false → skipped at runtime (no website / no presence in that market)
 
@@ -241,6 +241,13 @@ competitors:
     scraper_class: LuckinScraper
     url: "https://my.luckincoffee.com/"
     enabled: false
+
+  - market_code: "HK"
+    competitor_name: "Fairwood"
+    competitor_initial: "F"
+    scraper_class: FairwoodScraper
+    url: "https://www.fairwood.com.hk/en/stores"
+    enabled: true
 
   # ─── Chagee (霸王茶姬) ────────────────────────────────────────────────────
   # No official HK store-locator website; Google Maps used as data source.

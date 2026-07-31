@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import html
+import json
 import re
 from typing import Any
 
@@ -164,6 +166,45 @@ def parse_sushiro_sg(html: str) -> list[RawStore]:
         hours = lines[end + 1] if end + 1 < len(lines) else ""
         lat, lon = _coords_from_maps_url(link.get("href", ""))
         stores.append(RawStore(shop_name=name, address=address, operating_hours=hours, lat=lat, lon=lon))
+    return stores
+
+
+def parse_fairwood_hk_nextjs(page_html: str) -> list[RawStore]:
+    """Parse Fairwood Hong Kong official Next.js ``__NEXT_DATA__`` store list."""
+    match = re.search(
+        r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>',
+        page_html,
+        re.S,
+    )
+    if not match:
+        return []
+
+    try:
+        data = json.loads(html.unescape(match.group(1)))
+        stores_data = data["props"]["pageProps"]["data"]["stores"]
+    except (KeyError, TypeError, json.JSONDecodeError):
+        return []
+
+    if not isinstance(stores_data, list):
+        return []
+
+    stores: list[RawStore] = []
+    for item in stores_data:
+        if not isinstance(item, dict):
+            continue
+        name = clean(str(item.get("name") or ""))
+        address = clean(str(item.get("address") or ""))
+        if not name and not address:
+            continue
+        lat = item.get("latitude")
+        lon = item.get("longitude")
+        stores.append(RawStore(
+            shop_name=name,
+            address=address,
+            phone=clean(str(item.get("phoneNumber") or "")),
+            lat=float(lat) if lat not in (None, "") else None,
+            lon=float(lon) if lon not in (None, "") else None,
+        ))
     return stores
 
 

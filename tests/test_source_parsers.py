@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from scrapers.source_parsers import (
+    parse_fairwood_hk_nextjs,
     parse_mcd_hk_api,
     parse_mcd_th,
     parse_mcd_vn,
@@ -110,3 +111,18 @@ def test_parse_sushiro_sg_official_elementor_cards() -> None:
     assert rows[0].operating_hours == "11:00 - 22:00"
     assert rows[0].lat == 1.2863
     assert rows[0].lon == 103.8272
+
+
+def test_parse_fairwood_hk_official_nextjs_payload() -> None:
+    html = '''
+    <html><body>
+    <script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"data":{"stores":[{"id":"185","name":"Shun Tin Estate, Kwun Tong","address":"Shop Nos. 11-16, G/F, Tin Kuen House, Shun Tin Estate, Kwun Tong, Kowloon","phoneNumber":"2856 8663","latitude":"22.325405","longitude":"114.225977"}]}}}}</script>
+    </body></html>
+    '''
+    rows = parse_fairwood_hk_nextjs(html)
+    assert len(rows) == 1
+    assert rows[0].shop_name == "Shun Tin Estate, Kwun Tong"
+    assert rows[0].address == "Shop Nos. 11-16, G/F, Tin Kuen House, Shun Tin Estate, Kwun Tong, Kowloon"
+    assert rows[0].phone == "2856 8663"
+    assert rows[0].lat == 22.325405
+    assert rows[0].lon == 114.225977
